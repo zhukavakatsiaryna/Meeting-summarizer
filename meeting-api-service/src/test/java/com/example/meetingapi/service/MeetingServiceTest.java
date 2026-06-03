@@ -8,6 +8,7 @@ import com.example.meetingapi.exception.ResourceNotFoundException;
 import com.example.meetingapi.repository.MeetingRepository;
 import com.example.meetingapi.repository.MeetingSummaryRepository;
 import com.example.meetingapi.repository.UserRepository;
+import com.example.meetingapi.service.impl.MeetingServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,7 +36,7 @@ class MeetingServiceTest {
     @Mock private UserRepository userRepository;
     @Mock private KafkaProducerService kafkaProducerService;
     @Mock private S3Service s3Service;
-    @InjectMocks private MeetingService meetingService;
+    @InjectMocks private MeetingServiceImpl meetingService;
 
     private User owner;
     private UUID meetingId;

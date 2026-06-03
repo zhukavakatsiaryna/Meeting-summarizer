@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import com.example.meetingapi.service.impl.AuthServiceImpl;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
@@ -31,7 +32,7 @@ class AuthServiceTest {
     @Mock private PasswordEncoder passwordEncoder;
     @Mock private JwtTokenProvider jwtTokenProvider;
     @Mock private AuthenticationManager authenticationManager;
-    @InjectMocks private AuthService authService;
+    @InjectMocks private AuthServiceImpl authService;
 
     @Test
     void givenNewEmail_whenRegister_thenUserIsSavedWithEncodedPassword() {

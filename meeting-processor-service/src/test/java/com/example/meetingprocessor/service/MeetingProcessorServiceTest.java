@@ -7,6 +7,7 @@ import com.example.meetingprocessor.entity.MeetingStatus;
 import com.example.meetingprocessor.entity.MeetingSummary;
 import com.example.meetingprocessor.repository.MeetingRepository;
 import com.example.meetingprocessor.repository.MeetingSummaryRepository;
+import com.example.meetingprocessor.service.impl.MeetingProcessorServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,7 +32,7 @@ class MeetingProcessorServiceTest {
     @Mock private MeetingSummaryRepository summaryRepository;
     @Mock private AiSummarizerService aiSummarizerService;
     @Mock private TranscribeService transcribeService;
-    @InjectMocks private MeetingProcessorService processorService;
+    @InjectMocks private MeetingProcessorServiceImpl processorService;
 
     private UUID meetingId;
     private Meeting meeting;

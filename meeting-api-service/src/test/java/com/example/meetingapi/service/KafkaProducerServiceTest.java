@@ -2,6 +2,7 @@ package com.example.meetingapi.service;
 
 import com.example.meetingapi.entity.Meeting;
 import com.example.meetingapi.entity.User;
+import com.example.meetingapi.service.impl.KafkaProducerServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,7 +24,7 @@ import static org.mockito.Mockito.verify;
 class KafkaProducerServiceTest {
 
     @Mock private KafkaTemplate<String, Object> kafkaTemplate;
-    @InjectMocks private KafkaProducerService kafkaProducerService;
+    @InjectMocks private KafkaProducerServiceImpl kafkaProducerService;
 
     @BeforeEach
     void setUp() {
