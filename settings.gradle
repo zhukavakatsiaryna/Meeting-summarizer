@@ -1,0 +1,3 @@
+rootProject.name = 'meeting-summarizer'
+include 'meeting-api-service'
+include 'meeting-processor-service'

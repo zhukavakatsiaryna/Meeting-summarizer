@@ -1,0 +1,72 @@
+stages:
+  - build
+  - test
+  - docker
+  - deploy
+
+variables:
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+  API_IMAGE: $CI_REGISTRY_IMAGE/meeting-api-service
+  PROCESSOR_IMAGE: $CI_REGISTRY_IMAGE/meeting-processor-service
+
+build:
+  stage: build
+  image: eclipse-temurin:21-jdk-alpine
+  script:
+    - ./gradlew build -x test --no-daemon
+  artifacts:
+    paths:
+      - meeting-api-service/build/libs/
+      - meeting-processor-service/build/libs/
+    expire_in: 1 hour
+  cache:
+    key: "$CI_COMMIT_REF_SLUG-gradle"
+    paths:
+      - .gradle/
+      - ~/.gradle/caches/
+
+test:
+  stage: test
+  image: eclipse-temurin:21-jdk-alpine
+  script:
+    - ./gradlew test --no-daemon
+  artifacts:
+    reports:
+      junit: "**/build/test-results/**/*.xml"
+    when: always
+  cache:
+    key: "$CI_COMMIT_REF_SLUG-gradle"
+    paths:
+      - .gradle/
+      - ~/.gradle/caches/
+
+docker-build:
+  stage: docker
+  image: docker:24
+  services:
+    - docker:24-dind
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    - docker build -f meeting-api-service/Dockerfile -t $API_IMAGE:$CI_COMMIT_SHA -t $API_IMAGE:latest .
+    - docker build -f meeting-processor-service/Dockerfile -t $PROCESSOR_IMAGE:$CI_COMMIT_SHA -t $PROCESSOR_IMAGE:latest .
+    - docker push $API_IMAGE:$CI_COMMIT_SHA
+    - docker push $API_IMAGE:latest
+    - docker push $PROCESSOR_IMAGE:$CI_COMMIT_SHA
+    - docker push $PROCESSOR_IMAGE:latest
+  only:
+    - main
+
+deploy-staging:
+  stage: deploy
+  image: bitnami/kubectl:latest
+  script:
+    - kubectl set image deployment/meeting-api-service meeting-api-service=$API_IMAGE:$CI_COMMIT_SHA
+    - kubectl set image deployment/meeting-processor-service meeting-processor-service=$PROCESSOR_IMAGE:$CI_COMMIT_SHA
+    - kubectl rollout status deployment/meeting-api-service --timeout=120s
+    - kubectl rollout status deployment/meeting-processor-service --timeout=120s
+  environment:
+    name: staging
+  only:
+    - main
+  when: manual
