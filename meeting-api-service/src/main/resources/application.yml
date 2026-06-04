@@ -36,6 +36,17 @@ kafka:
   topics:
     meeting-uploaded: meeting.uploaded
 
+management:
+  server:
+    port: 8081
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never
+
 aws:
   region: ${AWS_REGION:us-east-1}
   access-key-id: ${AWS_ACCESS_KEY_ID:}
