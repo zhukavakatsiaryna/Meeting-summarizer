@@ -3,6 +3,7 @@ package com.example.meetingapi.controller;
 import com.example.meetingapi.dto.MeetingResponse;
 import com.example.meetingapi.dto.SummaryResponse;
 import com.example.meetingapi.service.MeetingService;
+import com.example.meetingapi.validation.UploadFileValidator;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,9 +19,11 @@ import java.util.UUID;
 public class MeetingController {
 
     private final MeetingService meetingService;
+    private final UploadFileValidator uploadFileValidator;
 
-    public MeetingController(MeetingService meetingService) {
+    public MeetingController(MeetingService meetingService, UploadFileValidator uploadFileValidator) {
         this.meetingService = meetingService;
+        this.uploadFileValidator = uploadFileValidator;
     }
 
     @PostMapping("/upload")
@@ -29,6 +32,7 @@ public class MeetingController {
             @RequestParam String title,
             @RequestParam("file") MultipartFile file,
             @AuthenticationPrincipal UserDetails userDetails) throws IOException {
+        uploadFileValidator.validate(file);
         return meetingService.uploadVideo(title, file, userDetails.getUsername());
     }
 
